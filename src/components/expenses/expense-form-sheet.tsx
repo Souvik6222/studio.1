@@ -72,6 +72,7 @@ export function ExpenseFormSheet({ onExpenseAdded }: ExpenseFormSheetProps) {
     defaultValues: {
       currency: "USD",
       description: "",
+      amount: undefined,
     },
   });
 
@@ -186,7 +187,7 @@ export function ExpenseFormSheet({ onExpenseAdded }: ExpenseFormSheetProps) {
                   <FormItem className="flex-1">
                     <FormLabel>Amount</FormLabel>
                     <FormControl>
-                      <Input type="number" placeholder="0.00" {...field} />
+                      <Input type="number" placeholder="0.00" {...field} value={field.value ?? ''} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
