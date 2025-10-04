@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -15,6 +16,8 @@ import {
 } from "@/components/ui/card";
 import { useAuth } from "@/hooks/use-auth";
 import type { UserRole } from "@/lib/types";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -35,37 +38,47 @@ export default function LoginPage() {
           </div>
           <CardTitle className="font-headline text-3xl">Welcome to ExpensEye</CardTitle>
           <CardDescription>
-            Select a role to simulate login and explore the dashboard.
+            Enter your credentials and select a role to explore the dashboard.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Button
-            onClick={() => handleLogin("admin")}
-            className="w-full"
-            variant="outline"
-            size="lg"
-          >
-            <Shield className="mr-2 h-5 w-5" />
-            Login as Admin
-          </Button>
-          <Button
-            onClick={() => handleLogin("manager")}
-            className="w-full"
-            variant="outline"
-            size="lg"
-          >
-            <Briefcase className="mr-2 h-5 w-5" />
-            Login as Manager
-          </Button>
-          <Button
-            onClick={() => handleLogin("employee")}
-            className="w-full"
-            variant="outline"
-            size="lg"
-          >
-            <User className="mr-2 h-5 w-5" />
-            Login as Employee
-          </Button>
+            <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input id="email" type="email" placeholder="user@example.com" />
+            </div>
+            <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <Input id="password" type="password" placeholder="********" />
+            </div>
+          <div className="space-y-2 pt-4">
+            <Button
+                onClick={() => handleLogin("admin")}
+                className="w-full"
+                variant="outline"
+                size="lg"
+            >
+                <Shield className="mr-2 h-5 w-5" />
+                Login as Admin
+            </Button>
+            <Button
+                onClick={() => handleLogin("manager")}
+                className="w-full"
+                variant="outline"
+                size="lg"
+            >
+                <Briefcase className="mr-2 h-5 w-5" />
+                Login as Manager
+            </Button>
+            <Button
+                onClick={() => handleLogin("employee")}
+                className="w-full"
+                variant="outline"
+                size="lg"
+            >
+                <User className="mr-2 h-5 w-5" />
+                Login as Employee
+            </Button>
+          </div>
         </CardContent>
         <CardFooter>
           <p className="text-center text-xs text-muted-foreground w-full">
