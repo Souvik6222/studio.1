@@ -17,15 +17,35 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import React from "react";
+import { useToast } from "@/hooks/use-toast";
 
 export default function ManagerView() {
   const { user } = useAuth();
+  const { toast } = useToast();
+
+  const [expenses, setExpenses] = React.useState<Expense[]>(mockExpenses);
   
   const teamMemberIds = mockUsers.filter(u => u.managerId === user?.id).map(u => u.id);
-  const teamExpenses = mockExpenses.filter(e => teamMemberIds.includes(e.employeeId));
-  const pendingApprovals = mockExpenses.filter(e => e.status === 'pending' && teamMemberIds.includes(e.employeeId) && e.approverStage === 1); // Simple logic for demo
+  const teamExpenses = expenses.filter(e => teamMemberIds.includes(e.employeeId));
+  const pendingApprovals = expenses.filter(e => e.status === 'pending' && teamMemberIds.includes(e.employeeId) && e.approverStage === 1); // Simple logic for demo
 
   const totalTeamSpend = teamExpenses.reduce((sum, e) => sum + e.amountInCompanyCurrency, 0);
+
+  const handleExpenseUpdate = (expenseId: string, status: 'approved' | 'rejected') => {
+    setExpenses(prevExpenses => {
+        return prevExpenses.map(expense => {
+            if (expense.id === expenseId) {
+                return { ...expense, status: status, approverStage: expense.approverStage + 1 };
+            }
+            return expense;
+        });
+    });
+    toast({
+        title: `Expense ${status}`,
+        description: `The expense has been successfully ${status}.`,
+    });
+  };
 
   return (
     <div className="space-y-8">
@@ -94,8 +114,8 @@ export default function ManagerView() {
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuItem>View details</DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>Approve</DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive">Reject</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleExpenseUpdate(expense.id, 'approved')}>Approve</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleExpenseUpdate(expense.id, 'rejected')} className="text-destructive">Reject</DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
