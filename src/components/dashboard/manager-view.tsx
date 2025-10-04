@@ -1,6 +1,6 @@
 "use client";
 
-import { DollarSign, Clock, Users } from "lucide-react";
+import { DollarSign, Clock, Users, MoreHorizontal } from "lucide-react";
 import { StatsCard } from "./stats-card";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { expenses as mockExpenses, users as mockUsers } from "@/lib/data";
@@ -9,13 +9,21 @@ import { Expense, User } from "@/lib/types";
 import { DataTable } from "../expenses/data-table";
 import { columns } from "../expenses/columns";
 import { Button } from "../ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function ManagerView() {
   const { user } = useAuth();
   
   const teamMemberIds = mockUsers.filter(u => u.managerId === user?.id).map(u => u.id);
   const teamExpenses = mockExpenses.filter(e => teamMemberIds.includes(e.employeeId));
-  const pendingApprovals = mockExpenses.filter(e => e.status === 'pending' && e.approverStage === 1); // Simple logic for demo
+  const pendingApprovals = mockExpenses.filter(e => e.status === 'pending' && teamMemberIds.includes(e.employeeId) && e.approverStage === 1); // Simple logic for demo
 
   const totalTeamSpend = teamExpenses.reduce((sum, e) => sum + e.amountInCompanyCurrency, 0);
 
@@ -75,9 +83,21 @@ export default function ManagerView() {
                         {expense.category}: ${expense.amount.toFixed(2)} {expense.currency}
                       </p>
                     </div>
-                    <div className="flex gap-2">
-                      <Button size="sm" variant="outline">View</Button>
-                    </div>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="h-8 w-8 p-0">
+                          <span className="sr-only">Open menu</span>
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuItem>View details</DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem>Approve</DropdownMenuItem>
+                        <DropdownMenuItem className="text-destructive">Reject</DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                 ))
               ) : (
